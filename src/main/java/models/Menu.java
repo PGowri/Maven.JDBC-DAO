@@ -4,15 +4,15 @@ public class Menu implements DtoInterface{
     private Integer Id;
     private String Chef;
     private String D_Name;
-    private String D_Ingredients;
+    private String D_Ingredient;
     private Integer Price;
     private String Location;
 
-    public Menu(Integer id, String chef, String d_Name, String d_Ingredients, Integer price, String location) {
+    public Menu(Integer id, String chef, String d_Name, String d_Ingredient, Integer price, String location) {
         Id = id;
         Chef = chef;
         D_Name = d_Name;
-        D_Ingredients = d_Ingredients;
+        D_Ingredient = d_Ingredient;
         Price = price;
         Location = location;
     }
@@ -20,10 +20,10 @@ public class Menu implements DtoInterface{
     public Menu() {
     }
 
-    public Menu(String chef, String d_Name, String d_Ingredients, Integer price, String location) {
+    public Menu(String chef, String d_Name, String d_Ingredient, Integer price, String location) {
         Chef = chef;
         D_Name = d_Name;
-        D_Ingredients = d_Ingredients;
+        D_Ingredient = d_Ingredient;
         Price = price;
         Location = location;
     }
@@ -52,12 +52,12 @@ public class Menu implements DtoInterface{
         D_Name = d_Name;
     }
 
-    public String getD_Ingredients() {
-        return D_Ingredients;
+    public String getD_Ingredient() {
+        return D_Ingredient;
     }
 
-    public void setD_Ingredients(String d_Ingredients) {
-        D_Ingredients = d_Ingredients;
+    public void setD_Ingredient(String d_Ingredient) {
+        D_Ingredient = d_Ingredient;
     }
 
     public Integer getPrice() {
@@ -76,4 +76,15 @@ public class Menu implements DtoInterface{
         Location = location;
     }
 
+    @Override
+    public String toString() {
+        return "Menu{" +
+                "Id=" + Id +
+                ", Chef='" + Chef + '\'' +
+                ", D_Name='" + D_Name + '\'' +
+                ", D_Ingredient='" + D_Ingredient + '\'' +
+                ", Price=" + Price +
+                ", Location='" + Location + '\'' +
+                '}';
+    }
 }

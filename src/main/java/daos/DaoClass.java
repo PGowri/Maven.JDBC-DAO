@@ -1,9 +1,9 @@
 package daos;
 
-import com.sun.jdi.connect.Connector;
 import models.Menu;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,7 +16,7 @@ public class DaoClass implements DaoInterface<Menu> {
         Connection connection = ConnectionFactory.getConnection();
         try {
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM user WHERE id=" + id);
+            ResultSet rs = stmt.executeQuery("SELECT * FROM menu WHERE id=" + id);
 
             if (rs.next()) {
                 Menu user = new Menu();
@@ -24,7 +24,7 @@ public class DaoClass implements DaoInterface<Menu> {
                 user.setId(rs.getInt("Id"));
                 user.setChef(rs.getString("Chef"));
                 user.setD_Name(rs.getString("D_Name"));
-                user.setD_Ingredients(rs.getString("D_Ingredients"));
+                user.setD_Ingredient(rs.getString("D_Ingredient"));
                 user.setPrice(rs.getInt("Price"));
                 user.setLocation(rs.getString("Location"));
 
@@ -44,7 +44,7 @@ public class DaoClass implements DaoInterface<Menu> {
         user.setId(rs.getInt("Id"));
         user.setChef(rs.getString("Chef"));
         user.setD_Name(rs.getString("D_Name"));
-        user.setD_Ingredients(rs.getString("D_Ingredients"));
+        user.setD_Ingredient(rs.getString("D_Ingredient"));
         user.setPrice(rs.getInt("Price"));
         user.setLocation(rs.getString("Location"));
 
@@ -60,14 +60,14 @@ public class DaoClass implements DaoInterface<Menu> {
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM menu");
 
-            Set users = new HashSet();
+            List users = new ArrayList();
 
             while (rs.next()) {
                 Menu user = extractUserFromResultSet(rs);
                 users.add(user);
             }
 
-            return (List) users;
+            return users;
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -75,62 +75,75 @@ public class DaoClass implements DaoInterface<Menu> {
         }
         return null;
     }
-
-
-
     @Override
-    public T update(Menu dto) {
+    public Menu update(Menu dto) {
         Connection connection = ConnectionFactory.getConnection();
         Menu user = new Menu();
         try {
-            PreparedStatement ps = connection.prepareStatement("UPDATE menu SET Chef=?, D_Name=? D_Ingredients=?, Price=?, Location=? WHERE Id=?");
-            ps.setInt(1, user.getId());
-            ps.setString(2, user.getChef());
-            ps.setString(3, user.getD_Name());
-            ps.setString(4, user.getD_Ingredients());
-            ps.setInt(5, user.getPrice());
-            ps.setString(6, user.getLocation());
+            PreparedStatement ps = connection.prepareStatement("UPDATE menu SET Chef=?, D_Name=? D_Ingredient=?, Price=?, Location=? WHERE Id=?");
+//            ps.setInt(1, user.getId());
+            ps.setString(1, dto.getChef());
+            ps.setString(2, dto.getD_Name());
+            ps.setString(3, dto.getD_Ingredient());
+            ps.setInt(4, dto.getPrice());
+            ps.setString(5, dto.getLocation());
+            ps.setInt(6, dto.getId());
             int i = ps.executeUpdate();
 
             if (i == 1) {
-                return (T) Convert.ChangeType(value, typeof(T));;
+                return dto;
             }
 
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-
-        return false;
-
-
+        return null;
     }
 
 
 
     @Override
-    public T create(T dto) {
+    public Menu create(Menu dto) {
 
         Connection connection = ConnectionFactory.getConnection();
         Menu user = new Menu();
         try {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO user VALUES (NULL, ?, ?, ?, ?, ?)");
-            ps.setInt(1, user.getId());
-            ps.setString(2, user.getChef());
-            ps.setString(3, user.getD_Name());
-            ps.setString(4, user.getD_Ingredients());
-            ps.setInt(5, user.getPrice());
-            ps.setString(6, user.getLocation());
+            ps.setString(1, dto.getChef());
+            ps.setString(2, dto.getD_Name());
+            ps.setString(3, dto.getD_Ingredient());
+            ps.setInt(4, dto.getPrice());
+            ps.setString(5, dto.getLocation());
             int i = ps.executeUpdate();
 
             if (i == 1) {
-                return true;
+                PreparedStatement ps1 = connection.prepareStatement("Select * From menu where Chef= ? and D_Name = ? and D_Ingredients = ? and Price = ? and Location =?");
+                ps1.setString(1, dto.getChef());
+                ps1.setString(2, dto.getD_Name());
+                ps1.setString(3, dto.getD_Ingredient());
+                ps1.setInt(4, dto.getPrice());
+                ps1.setString(5, dto.getLocation());
+                ResultSet rs = ps1.executeQuery();
+                if (rs.next()) {
+//                    Menu user = new Menu();
+
+                    user.setId(rs.getInt("Id"));
+                    user.setChef(rs.getString("Chef"));
+                    user.setD_Name(rs.getString("D_Name"));
+                    user.setD_Ingredient(rs.getString("D_Ingredients"));
+                    user.setPrice(rs.getInt("Price"));
+                    user.setLocation(rs.getString("Location"));
+
+                    return user;
+                }
+
             }
 
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
 
-        return false;
+        return null;
     }
 
     @Override
